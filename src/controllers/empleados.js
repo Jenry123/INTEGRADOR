@@ -1,7 +1,8 @@
 const db = require('./base');
-
+require('dotenv').config();
+const authenticateJWT=require('./token/authMiddleware')
 // Obtener todos los empleados
-exports.getAllEmployees = (req, res) => {
+exports.getAllEmployees = [authenticateJWT,(req, res) => {
   db.query('SELECT * FROM Empleados', (err, result) => {
     if (err) {
       res.status(500).send('Error al obtener los empleados');
@@ -9,10 +10,10 @@ exports.getAllEmployees = (req, res) => {
     }
     res.json(result);
   });
-};
+}];
 
 // Agregar un nuevo empleado
-exports.addEmployee = (req, res) => {
+exports.addEmployee = [authenticateJWT,(req, res) => {
   const newEmployee = req.body;
   db.query('INSERT INTO Empleados (id_empleado, nombre, apellidos, email, telefono) VALUES (?, ?, ?, ?, ?)',
     [newEmployee.id_empleado, newEmployee.nombre, newEmployee.apellidos, newEmployee.email, newEmployee.telefono],
@@ -23,10 +24,10 @@ exports.addEmployee = (req, res) => {
       }
       res.status(201).send('Nuevo empleado agregado correctamente');
     });
-};
+}];
 
 // Actualizar un empleado existente
-exports.updateEmployee = (req, res) => {
+exports.updateEmployee = [authenticateJWT,(req, res) => {
   const employeeId = req.params.id;
   const updatedEmployee = req.body;
   db.query('UPDATE Empleados SET ? WHERE id_empleado = ?', [updatedEmployee, employeeId], (err, result) => {
@@ -36,10 +37,10 @@ exports.updateEmployee = (req, res) => {
     }
     res.send('Empleado actualizado correctamente');
   });
-};
+}];
 
 // Eliminar un empleado
-exports.deleteEmployee = (req, res) => {
+exports.deleteEmployee = [authenticateJWT,(req, res) => {
   const employeeId = req.params.id;
   db.query('DELETE FROM Empleados WHERE id_empleado = ?', employeeId, (err, result) => {
     if (err) {
@@ -48,4 +49,4 @@ exports.deleteEmployee = (req, res) => {
     }
     res.send('Empleado eliminado correctamente');
   });
-};
+}];

@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const authenticateJWT=require('./token/authMiddleware')
 const db = require('./base');
 
 
@@ -58,23 +58,8 @@ exports.login = async (req, res) => {
 
 
 // Middleware de autenticación
-exports.authenticateJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.sendStatus(403); // Token inválido
-      }
-      req.user = user;
-      next();
-    });
-  } else {
-    res.sendStatus(401); // No autorizado (sin token)
-  }
-};
 
-exports.updateUser =[this.authenticateJWT, (req, res) => {
+exports.updateUser =[authenticateJWT, (req, res) => {
   const userId = req.params.id;
   const updatedUser = req.body;
   db.query('UPDATE Usuarios SET ? WHERE id_usuario = ?', [updatedUser, userId], (err, result) => {
@@ -87,7 +72,7 @@ exports.updateUser =[this.authenticateJWT, (req, res) => {
 }];
 
 // Eliminar un usuario
-exports.deleteUser = [this.authenticateJWT, (req, res) => {
+exports.deleteUser = [authenticateJWT, (req, res) => {
   const userId = req.params.id;
   db.query('DELETE FROM Usuarios WHERE id_usuario = ?', userId, (err, result) => {
     if (err) {
@@ -99,7 +84,7 @@ exports.deleteUser = [this.authenticateJWT, (req, res) => {
 }];
 
 // Obtener todos los usuarios
-exports.getAllUsers = [this.authenticateJWT, (req, res) => {
+exports.getAllUsers = [authenticateJWT, (req, res) => {
   db.query('SELECT * FROM Usuarios', (err, result) => {
     if (err) {
       res.status(500).send('Error al obtener los usuarios');

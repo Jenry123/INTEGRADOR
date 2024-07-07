@@ -1,7 +1,7 @@
 const db = require('./base');
-
+const authenticateJWT=require('./token/authMiddleware')
 // Obtener todos los proveedores
-exports.getAllSuppliers = (req, res) => {
+exports.getAllSuppliers =[authenticateJWT, (req, res) => {
   db.query('SELECT * FROM Proveedores', (err, result) => {
     if (err) {
       res.status(500).send('Error al obtener los proveedores');
@@ -9,10 +9,10 @@ exports.getAllSuppliers = (req, res) => {
     }
     res.json(result);
   });
-};
+}];
 
 // Agregar un nuevo proveedor
-exports.addSupplier = (req, res) => {
+exports.addSupplier = [authenticateJWT,(req, res) => {
   const newSupplier = req.body;
   db.query('INSERT INTO Proveedores (id_proveedor, nombre, contacto, telefono, email) VALUES (?, ?, ?, ?, ?)',
     [newSupplier.id_proveedor, newSupplier.nombre, newSupplier.contacto, newSupplier.telefono, newSupplier.email],
@@ -23,10 +23,10 @@ exports.addSupplier = (req, res) => {
       }
       res.status(201).send('Nuevo proveedor agregado correctamente');
     });
-};
+}];
 
 // Actualizar un proveedor existente
-exports.updateSupplier = (req, res) => {
+exports.updateSupplier = [authenticateJWT,(req, res) => {
   const supplierId = req.params.id;
   const updatedSupplier = req.body;
   db.query('UPDATE Proveedores SET ? WHERE id_proveedor = ?', [updatedSupplier, supplierId], (err, result) => {
@@ -36,10 +36,10 @@ exports.updateSupplier = (req, res) => {
     }
     res.send('Proveedor actualizado correctamente');
   });
-};
+}];
 
 // Eliminar un proveedor
-exports.deleteSupplier = (req, res) => {
+exports.deleteSupplier = [authenticateJWT,(req, res) => {
   const supplierId = req.params.id;
   db.query('DELETE FROM Proveedores WHERE id_proveedor = ?', supplierId, (err, result) => {
     if (err) {
@@ -48,4 +48,4 @@ exports.deleteSupplier = (req, res) => {
     }
     res.send('Proveedor eliminado correctamente');
   });
-};
+}];
