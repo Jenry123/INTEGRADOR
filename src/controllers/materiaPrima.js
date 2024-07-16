@@ -14,8 +14,8 @@ exports.getAllServices =[authenticateJWT, (req, res) => {
 // Agregar un nuevo servicio
 exports.addService = [authenticateJWT,(req, res) => {
   const newService = req.body;
-  db.query('INSERT INTO Servicios (id_servicio, nombre, descripcion, id_proveedor) VALUES (?, ?, ?, ?)',
-    [newService.id_servicio, newService.nombre, newService.descripcion, newService.id_proveedor],
+  db.query('INSERT INTO Servicios (id_materia_prima, nombre, descripcion, cantidad, unidad, id_inventario) VALUES (?, ?, ?, ?, ?)',
+    [newService.id_servicio, newService.nombre, newService.descripcion, newService.id_proveedor, newService.id_inventario],
     (err, result) => {
       if (err) {
         res.status(500).send('Error al agregar un nuevo servicio');
@@ -41,7 +41,7 @@ exports.updateService = [authenticateJWT,(req, res) => {
 // Eliminar un servicio
 exports.deleteService =[authenticateJWT, (req, res) => {
   const serviceId = req.params.id;
-  db.query('DELETE FROM Servicios WHERE id_servicio = ?', serviceId, (err, result) => {
+  db.query('DELETE FROM Servicios WHERE id_materia_Prima = ?', serviceId, (err, result) => {
     if (err) {
       res.status(500).send('Error al eliminar el servicio');
       throw err;

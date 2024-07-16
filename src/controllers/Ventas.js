@@ -1,7 +1,7 @@
 const db = require('./base');
 const authenticateJWT=require('./token/authMiddleware')
 // Obtener todas las ventas
-exports.obtenerTodasLasVentas =[authenticateJWT, (req, res) => {
+exports.obtenerTodasLasVentas = (req, res) => {
   db.query('SELECT * FROM Ventas', (err, result) => {
     if (err) {
       res.status(500).send('Error al obtener las ventas');
@@ -9,10 +9,10 @@ exports.obtenerTodasLasVentas =[authenticateJWT, (req, res) => {
     }
     res.json(result);
   });
-}];
+};
 
 // Agregar una nueva venta
-exports.agregarVenta = [authenticateJWT,(req, res) => {
+exports.agregarVenta =(req, res) => {
   const nuevaVenta = req.body;
   db.query('INSERT INTO Ventas (id_venta, fecha, id_empleado, id_usuario, total) VALUES (?, ?, ?, ?, ?)',
     [nuevaVenta.id_venta, nuevaVenta.fecha, nuevaVenta.id_empleado, nuevaVenta.id_usuario, nuevaVenta.total],
@@ -23,10 +23,10 @@ exports.agregarVenta = [authenticateJWT,(req, res) => {
       }
       res.status(201).send('Nueva venta agregada correctamente');
     });
-}];
+};
 
 // Actualizar una venta existente
-exports.actualizarVenta = [authenticateJWT,(req, res) => {
+exports.actualizarVenta = (req, res) => {
   const idVenta = req.params.id;
   const ventaActualizada = req.body;
   db.query('UPDATE Ventas SET ? WHERE id_venta = ?', [ventaActualizada, idVenta], (err, result) => {
@@ -36,4 +36,4 @@ exports.actualizarVenta = [authenticateJWT,(req, res) => {
     }
     res.send('Venta actualizada correctamente');
   });
-}];
+};

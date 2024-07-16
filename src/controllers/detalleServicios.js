@@ -1,7 +1,7 @@
 const db = require('./base');
-const authenticateJWT=require('./middleware/authMiddleware')
+const authenticateJWT=require('./token/authMiddleware')
 // Obtener todos los detalles de servicios
-exports.obtenerTodosLosDetallesDeServicios = [authenticateJWT,(req, res) => {
+exports.obtenerTodosLosDetallesDeServicios = (req, res) => {
   db.query('SELECT * FROM DetalleServicios', (err, result) => {
     if (err) {
       res.status(500).send('Error al obtener los detalles de servicios');
@@ -9,10 +9,10 @@ exports.obtenerTodosLosDetallesDeServicios = [authenticateJWT,(req, res) => {
     }
     res.json(result);
   });
-}];
+};
 
 // Obtener un detalle de servicio por ID
-exports.obtenerDetalleDeServicioPorId = [authenticateJWT,(req, res) => {
+exports.obtenerDetalleDeServicioPorId = (req, res) => {
   const idDetalleServicio = req.params.id;
   db.query('SELECT * FROM DetalleServicios WHERE id_detalle_servicio = ?', [idDetalleServicio], (err, result) => {
     if (err) {
@@ -25,10 +25,10 @@ exports.obtenerDetalleDeServicioPorId = [authenticateJWT,(req, res) => {
       res.json(result[0]);
     }
   });
-}];
+};
 
 // Agregar un nuevo detalle de servicio
-exports.agregarDetalleDeServicio =[authenticateJWT, (req, res) => {
+exports.agregarDetalleDeServicio = (req, res) => {
   const { id_detalle_servicio, id_servicio, id_venta, costo } = req.body;
 
   // Verificar que las claves foráneas existan
@@ -51,8 +51,8 @@ exports.agregarDetalleDeServicio =[authenticateJWT, (req, res) => {
       }
 
       // Insertar el nuevo detalle de servicio
-      db.query('INSERT INTO DetalleServicios (id_detalle_servicio, id_servicio, id_venta, costo) VALUES (?, ?, ?, ?)',
-        [id_detalle_servicio, id_servicio, id_venta, costo],
+      db.query('INSERT INTO DetalleServicios (id_detalle_servicio, id_servicio, costo) VALUES (?, ?, ?, ?)',
+        [id_detalle_servicio, id_servicio, costo],
         (err, result) => {
           if (err) {
             res.status(500).send('Error al agregar un nuevo detalle de servicio');
@@ -62,12 +62,12 @@ exports.agregarDetalleDeServicio =[authenticateJWT, (req, res) => {
         });
     });
   });
-}];
+};
 
 // Actualizar un detalle de servicio existente
-exports.actualizarDetalleDeServicio = [authenticateJWT,(req, res) => {
+exports.actualizarDetalleDeServicio = (req, res) => {
   const idDetalleServicio = req.params.id;
-  const { id_servicio, id_venta, costo } = req.body;
+  const { id_servicio, costo } = req.body;
 
   // Verificar que las claves foráneas existan
   db.query('SELECT * FROM Servicios WHERE id_servicio = ?', [id_servicio], (err, result) => {
@@ -100,10 +100,10 @@ exports.actualizarDetalleDeServicio = [authenticateJWT,(req, res) => {
         });
     });
   });
-}];
+};
 
 // Eliminar un detalle de servicio
-exports.eliminarDetalleDeServicio =[authenticateJWT, (req, res) => {
+exports.eliminarDetalleDeServicio =(req, res) => {
   const idDetalleServicio = req.params.id;
   db.query('DELETE FROM DetalleServicios WHERE id_detalle_servicio = ?', [idDetalleServicio], (err, result) => {
     if (err) {
@@ -112,4 +112,6 @@ exports.eliminarDetalleDeServicio =[authenticateJWT, (req, res) => {
     }
     res.send('Detalle de servicio eliminado correctamente');
   });
-}];
+};
+
+

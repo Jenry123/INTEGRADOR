@@ -14,8 +14,8 @@ exports.obtenerTodaLaMaquinaria = [authenticateJWT,(req, res) => {
 // Agregar una nueva maquinaria
 exports.agregarMaquinaria =[authenticateJWT, (req, res) => {
   const { id_maquinaria, nombre, descripcion, cantidad } = req.body;
-  db.query('INSERT INTO Maquinaria (id_maquinaria, nombre, descripcion, cantidad) VALUES (?, ?, ?, ?)',
-    [id_maquinaria, nombre, descripcion, cantidad],
+  db.query('INSERT INTO Maquinaria (id_maquinaria, nombre, descripcion, cantidad, id_inventario) VALUES (?, ?, ?, ?,?)',
+    [id_maquinaria, nombre, descripcion, cantidad,id_inventario],
     (err, result) => {
       if (err) {
         res.status(500).send('Error al agregar una nueva maquinaria');
@@ -28,9 +28,9 @@ exports.agregarMaquinaria =[authenticateJWT, (req, res) => {
 // Actualizar una maquinaria existente
 exports.actualizarMaquinaria = [authenticateJWT,(req, res) => {
   const idMaquinaria = req.params.id;
-  const { nombre, descripcion, cantidad } = req.body;
-  db.query('UPDATE Maquinaria SET nombre = ?, descripcion = ?, cantidad = ? WHERE id_maquinaria = ?',
-    [nombre, descripcion, cantidad, idMaquinaria],
+  const { nombre, descripcion, cantidad, id_inventario } = req.body;
+  db.query('UPDATE Maquinaria SET nombre = ?, descripcion = ?, cantidad = ?, WHERE id_inventario = ?',
+    [nombre, descripcion, cantidad, idMaquinaria, id_inventario],
     (err, result) => {
       if (err) {
         res.status(500).send('Error al actualizar la maquinaria');

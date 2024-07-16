@@ -1,7 +1,7 @@
 const db = require('./base');
 const authenticateJWT=require('./token/authMiddleware')
 // Obtener todos los detalles de venta
-exports.obtenerTodosLosDetallesDeVenta =[authenticateJWT, (req, res) => {
+exports.obtenerOfrece=[authenticateJWT, (req, res) => {
   db.query('SELECT * FROM DetalleVenta', (err, result) => {
     if (err) {
       res.status(500).send('Error al obtener los detalles de venta');
@@ -11,21 +11,7 @@ exports.obtenerTodosLosDetallesDeVenta =[authenticateJWT, (req, res) => {
   });
 }];
 
-// Obtener un detalle de venta por ID
-exports.obtenerDetalleDeVentaPorId =[authenticateJWT, (req, res) => {
-  const idDetalleVenta = req.params.id;
-  db.query('SELECT * FROM DetalleVenta WHERE id_detalle_venta = ?', [idDetalleVenta], (err, result) => {
-    if (err) {
-      res.status(500).send('Error al obtener el detalle de venta');
-      throw err;
-    }
-    if (result.length === 0) {
-      res.status(404).send('Detalle de venta no encontrado');
-    } else {
-      res.json(result[0]);
-    }
-  });
-}];
+
 
 // Agregar un nuevo detalle de venta
 exports.agregarDetalleDeVenta =[authenticateJWT, (req, res) => {
